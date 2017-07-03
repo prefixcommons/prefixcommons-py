@@ -5,3 +5,6 @@ test:
 release: cleandist
 	python setup.py sdist bdist_wheel bdist_egg
 	twine upload dist/*
+
+cleandist:
+	rm dist/* || true
