@@ -18,7 +18,7 @@ setuptools.setup(
     version=version,
     author='Chris Mungall',
     author_email='cmungall@gmail.com',
-    url='https://github.com/biolink-api/prefixcommons',
+    url='https://github.com/prefixcommons/prefixcommons',
     description='Library for working prefixcommons.org CURIEs',
     long_description=open("README.rst").read(),
     license='BSD3',
