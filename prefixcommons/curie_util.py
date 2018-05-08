@@ -2,9 +2,10 @@ import json
 import requests
 from contextlib import closing
 from cachier import cachier
+import logging
 import datetime
 
-SHELF_LIFE = datetime.timedelta(days=1)
+SHELF_LIFE = datetime.timedelta(days=7)
 
 class CurieError(Exception):
     """base class"""
@@ -58,6 +59,8 @@ def read_remote_jsonld_context(url):
         # TODO: redirects
         if resp.status_code == 200:
             return extract_prefixmap(resp.json())
+        else:
+            logging.error("Cannot fetch: {}".format(url))
 
 def extract_prefixmap(obj):
     if '@context' in obj:
@@ -91,7 +94,7 @@ def contract_uri(uri, cmaps=default_curie_maps, strict=False):
 
     Returns a list of possible CURIES
 
-    If strict is True, then exactly on result expected.
+    If strict is True, then exactly one result expected.
 
     Note if there are ambiguous rules it is possible to have multiple (e.g. GO:nnnn and OBO:GO_nnnn)
     """
@@ -125,3 +128,4 @@ def expand_uri(id, cmaps=default_curie_maps, strict=False):
         raise NoExpansion(prefix, id)
     else:
         return id
+
