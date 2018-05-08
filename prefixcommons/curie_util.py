@@ -88,22 +88,38 @@ def get_prefixes(cmaps=default_curie_maps):
     return prefixes
         
 
-def contract_uri(uri, cmaps=default_curie_maps, strict=False):
+def contract_uri(uri, cmaps=default_curie_maps, strict=False, shortest=True):
     """
     Contracts a URI/IRI to a CURIE/identifier
 
-    Returns a list of possible CURIES
+    Note if there are ambiguous rules it is possible to have multiple (e.g. GO:nnnn and OBO:GO_nnnn),
+    the strict and shortest arguments can be used to control behavior here
+
+    Arguments
+    ---------
+    cmaps : list
+        list of context maps
+    strict: boolean
+        if true, throw error if URI does not contract to exactly one CURIE. Default: False
+    shortest: boolean
+        if true, filter list to only include shortest. Default: True
+    returns:
+       a list of possible CURIES
 
     If strict is True, then exactly one result expected.
 
-    Note if there are ambiguous rules it is possible to have multiple (e.g. GO:nnnn and OBO:GO_nnnn)
     """
-    curies = []
+    curies = set()
     for cmap in cmaps:
         for (k,v) in cmap.items():
             if isinstance(v, str):
                 if (uri.startswith(v)):
-                    curies.append(uri.replace(v, k+":"))
+                    curies.add(uri.replace(v, k+":"))
+    curies = list(curies)
+    if shortest:
+        if len(curies) > 1:
+            le = min(len(x) for x in curies)
+            curies = [x for x in curies if len(x) == le]
     if strict:
         if len(curies) == 0:
             raise NoPrefix(uri)
