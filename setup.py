@@ -6,7 +6,7 @@ import subprocess
 import setuptools
 
 # get version
-execfile('prefixcommons/version.py')
+exec(open('prefixcommons/version.py').read())
 
 if sys.version_info.major < 3:
     sys.exit("Error: Python 3 is required")
@@ -21,7 +21,7 @@ directory = os.path.dirname(os.path.abspath(__file__))
 
 setuptools.setup(
     name='prefixcommons',
-    version = prefixcommons.__version__,
+    version = __version__,
     author='Chris Mungall',
     author_email='cmungall@gmail.com',
     url='https://github.com/prefixcommons/prefixcommons',
