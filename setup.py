@@ -43,6 +43,8 @@ setuptools.setup(
         'requests',
         'cachier'
     ],
+
+    scripts=['bin/curie-csv.py'],
     
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
