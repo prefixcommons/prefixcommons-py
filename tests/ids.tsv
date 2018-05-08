@@ -1,0 +1,71 @@
+GO:0021761	limbic system development
+GO:0035108	limb morphogenesis
+GO:0036022	limb joint morphogenesis
+GO:0060173	limb development
+GO:0060174	limb bud formation
+GO:0060887	limb epidermis development
+GO:0060888	limb epidermis stratification
+GO:0060889	limb basal epidermal cell differentiation
+GO:0060890	limb spinous cell differentiation
+GO:0060891	limb granular cell differentiation
+GO:0060892	limb basal epidermal cell fate specification
+GO:0060893	limb granular cell fate specification
+GO:0060894	limb spinous cell fate specification
+UBERON:0000026	appendage
+UBERON:0000349	limbic system
+UBERON:0001419	skin of limb
+UBERON:0002101	limb
+UBERON:0002276	lamina of spiral limbus
+UBERON:0002428	limb bone
+UBERON:0002529	limb segment
+UBERON:0002544	digit
+UBERON:0002600	limbic lobe
+UBERON:0003440	limb nerve
+UBERON:0003514	limb blood vessel
+UBERON:0003587	limb connective tissue
+UBERON:0003606	limb long bone
+UBERON:0003657	limb joint
+UBERON:0003661	limb muscle
+UBERON:0003839	forelimb joint
+UBERON:0003840	hindlimb joint
+UBERON:0003841	autopod joint
+UBERON:0004347	limb bud
+UBERON:0004357	paired limb/fin bud
+UBERON:0004381	skeleton of limb
+UBERON:0004480	musculature of limb
+UBERON:0004708	paired limb/fin
+UBERON:0005417	forelimb bud
+UBERON:0005418	hindlimb bud
+UBERON:0005732	paired limb/fin field
+UBERON:0005733	limb field
+UBERON:0005881	autopodial extension
+UBERON:0005896	obsolete jointed/prehensile appendage **OBSOLETE** 
+UBERON:0006048	digit 1
+UBERON:0006049	digit 2
+UBERON:0006050	digit 3
+UBERON:0006051	digit 4
+UBERON:0006052	digit 5
+UBERON:0006761	corneo-scleral junction
+UBERON:0007301	appendage blood vessel
+UBERON:0007823	appendage girdle region
+UBERON:0009200	limb epidermis
+UBERON:0009749	limb mesenchyme
+UBERON:0010130	embryonic autopod plate
+UBERON:0010328	limb bud mesenchyme
+UBERON:0010538	paired limb/fin segment
+UBERON:0010707	appendage girdle complex
+UBERON:0010712	limb skeleton subdivision
+UBERON:0010740	bone of appendage girdle complex
+UBERON:0010881	limb cartilage element
+UBERON:0010882	limb bone pre-cartilage condensation
+UBERON:0011582	paired limb/fin skeleton
+UBERON:0012300	limb paddle
+UBERON:0014525	limb of internal capsule of telencephalon
+UBERON:0015061	limb endochondral element
+UBERON:0016542	limbic cortex
+UBERON:0016856	digit 6
+UBERON:0016857	digit 7
+UBERON:0016858	digit 8
+UBERON:3000981	limb external integument structure
+UBERON:3010606	limb gland
+UBERON:3010721	limb villosities
