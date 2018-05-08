@@ -5,7 +5,8 @@ import subprocess
 
 import setuptools
 
-import prefixcommons
+# get version
+execfile('prefixcommons/version.py')
 
 if sys.version_info.major < 3:
     sys.exit("Error: Python 3 is required")
