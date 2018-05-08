@@ -33,3 +33,12 @@ You can pass your own
    >>> print(contract_uri('http://purl.obolibrary.org/obo/GO_0008150'), cmaps)
    GO:0008150
 
+You can also use a pre-defined context from biocontexts
+   
+::
+
+   >>> from prefixcommons import read_biocontext
+   >>> ctxt = read_biocontext('translator_context')
+   >>> print(contract_uri('http://purl.obolibrary.org/obo/GO_0008150'), [ctxt])
+   GO:0008150
+   
