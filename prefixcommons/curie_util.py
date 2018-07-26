@@ -75,7 +75,7 @@ def read_biocontext(name):
 
     E.g. monarch_context
     """
-    return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
+    return read_remote_jsonld_context("http://w3id.org/biolink/biocontext/"+name+".jsonld")
         
 
 # TODO: configration
