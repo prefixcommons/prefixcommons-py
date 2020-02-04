@@ -22,14 +22,14 @@ class NoContraction(CurieError):
         
 class NoPrefix(CurieError):
     """Thrown if no prefix matches."""
-    def __init__(self, curie):
-        self.curie = curie
+    def __init__(self, uri):
+        self.uri = uri
         
 class AmbiguousPrefix(CurieError):
     """Thrown if multiple prefix matches."""
     def __init__(self, uri, curies):
         self.uri = uri
-        self.curie = curie
+        self.curies = curies
 
 class InvalidSyntax(CurieError):
     """Thrown if curie does not contain ":" ."""
