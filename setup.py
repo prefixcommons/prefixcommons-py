@@ -42,8 +42,7 @@ setuptools.setup(
     # Dependencies
     install_requires=[
         'pyyaml',
-        'requests',
-        'cachier'
+        'requests'
     ],
 
     scripts=['bin/curie-csv.py'],
