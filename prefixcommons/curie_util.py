@@ -1,7 +1,6 @@
 import json
 import requests
 from contextlib import closing
-from cachier import cachier
 import logging
 import datetime
 
@@ -48,7 +47,6 @@ def read_local_jsonld_context(fn):
     f.close()
     return extract_prefixmap(json.loads(jsonstr))
 
-@cachier(stale_after=SHELF_LIFE)
 def read_remote_jsonld_context(url):
     """
     Returns a prefix map from a JSON-LD context from a URL
@@ -67,8 +65,7 @@ def extract_prefixmap(obj):
         return obj['@context']
     else:
         return obj
-        
-@cachier(stale_after=SHELF_LIFE)
+
 def read_biocontext(name):
     """
     Uses prefixcommons registry
