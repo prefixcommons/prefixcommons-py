@@ -24,7 +24,7 @@ setuptools.setup(
     version = __version__,
     author='Chris Mungall',
     author_email='cmungall@gmail.com',
-    url='https://github.com/prefixcommons/prefixcommons',
+    url='https://github.com/prefixcommons/prefixcommons-py',
     description='Library for working prefixcommons.org CURIEs',
     long_description=open("README.rst").read(),
     license='BSD3',
