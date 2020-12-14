@@ -16,10 +16,10 @@ Example
    
    >>> from prefixcommons import contract_uri
    >>> print(contract_uri('http://purl.obolibrary.org/obo/GO_0008150'))
-   GO:0008150
+   ['GO:0008150']
    
    >>> from prefixcommons import expand_uri
-   >>> print(expand_uri('GOL0008150'))
+   >>> print(expand_uri('GO:000850'))
    http://purl.obolibrary.org/obo/GO_0008150
 
 The above uses standard JSON-LD context files from 
@@ -31,5 +31,5 @@ You can pass your own
 
    >>> cmaps = [{'GO': 'http://purl.obolibrary.org/obo/GO_'}]
    >>> print(contract_uri('http://purl.obolibrary.org/obo/GO_0008150'), cmaps)
-   GO:0008150
+   ['GO:0008150']
 
