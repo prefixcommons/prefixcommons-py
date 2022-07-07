@@ -1,10 +1,15 @@
 import json
+from pathlib import Path
+from typing import Dict, Any, List, Optional
+
 import requests
 from contextlib import closing
 import logging
-import datetime
 
-SHELF_LIFE = datetime.timedelta(days=7)
+PREFIX_MAP = Dict[str, Any]
+
+this_path = Path(__file__).parent
+
 
 class CurieError(Exception):
     """base class"""
@@ -15,21 +20,25 @@ class NoExpansion(CurieError):
         self.prefix = prefix
         self.id = id
 
+
 class NoContraction(CurieError):
     """Thrown if no prefix matches."""
     def __init__(self, uri):
         self.uri = uri
-        
+
+
 class NoPrefix(CurieError):
     """Thrown if no prefix matches."""
     def __init__(self, uri):
         self.uri = uri
-        
+
+
 class AmbiguousPrefix(CurieError):
     """Thrown if multiple prefix matches."""
     def __init__(self, uri, curies):
         self.uri = uri
         self.curies = curies
+
 
 class InvalidSyntax(CurieError):
     """Thrown if curie does not contain ":" ."""
@@ -37,17 +46,16 @@ class InvalidSyntax(CurieError):
         self.id = id
 
 
-def read_local_jsonld_context(fn):
+def read_local_jsonld_context(fn) -> PREFIX_MAP:
     """
     Reads a prefix map from a JSON-LD context file from local disk
     """
 
-    f = open(fn, 'r')
-    jsonstr = f.read()
-    f.close()
-    return extract_prefixmap(json.loads(jsonstr))
+    with open(fn) as file:
+        return extract_prefixmap(json.load(file))
 
-def read_remote_jsonld_context(url):
+
+def read_remote_jsonld_context(url: str) -> PREFIX_MAP:
     """
     Returns a prefix map from a JSON-LD context from a URL
 
@@ -60,32 +68,40 @@ def read_remote_jsonld_context(url):
         else:
             logging.error("Cannot fetch: {}".format(url))
 
-def extract_prefixmap(obj):
+
+def extract_prefixmap(obj: Dict[str, Any]) -> PREFIX_MAP:
     if '@context' in obj:
         return obj['@context']
     else:
         return obj
 
-def read_biocontext(name):
+
+def read_biocontext(name: str) -> PREFIX_MAP:
     """
     Uses prefixcommons registry
 
     E.g. monarch_context
     """
-    return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
+    path_to_jsonld = str(this_path / 'registry' / f"{name}.jsonld")
+    with open(path_to_jsonld) as file:
+        return extract_prefixmap(json.load(file))
+    #return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
         
 
 # TODO: configration
-default_curie_maps = [read_biocontext('monarch_context'),read_biocontext('obo_context')]
+default_curie_maps = [read_biocontext('monarch_context'), read_biocontext('obo_context')]
 
-def get_prefixes(cmaps=default_curie_maps):
+
+def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] =None):
+    if cmaps is None:
+        cmaps = default_curie_maps
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
     return prefixes
         
 
-def contract_uri(uri, cmaps=default_curie_maps, strict=False, shortest=True):
+def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, shortest=True):
     """
     Contracts a URI/IRI to a CURIE/identifier
 
@@ -106,6 +122,8 @@ def contract_uri(uri, cmaps=default_curie_maps, strict=False, shortest=True):
     If strict is True, then exactly one result expected.
 
     """
+    if cmaps is None:
+        cmaps = default_curie_maps
     curies = set()
     for cmap in cmaps:
         for (k,v) in cmap.items():
@@ -124,10 +142,13 @@ def contract_uri(uri, cmaps=default_curie_maps, strict=False, shortest=True):
             raise AmbiguousPrefix(uri, curies)
     return curies
 
-def expand_uri(id, cmaps=default_curie_maps, strict=False):
+
+def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
     """
     Expands a CURIE/identifier to a URI
     """
+    if cmaps is None:
+        cmaps = default_curie_maps
     if id.find(":") == -1:
         if strict:
             raise InvalidSyntax(id)

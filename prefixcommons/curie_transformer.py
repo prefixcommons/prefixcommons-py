@@ -1,5 +1,6 @@
 import csv
-from .curie_util import expand_uri, contract_uri, NoPrefix
+from .curie_util import expand_uri, contract_uri
+
 
 class Transformer(object):
     """
@@ -26,6 +27,7 @@ class Transformer(object):
                 return expand_uri(x, strict=self.strict)
             else:
                 return expand_uri(x, cmaps=self.cmaps, strict=self.strict)
+
 
 class CsvTransformer(Transformer):
     """
