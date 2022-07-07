@@ -1,5 +1,6 @@
 from prefixcommons import CsvTransformer
 
+
 def test_csv():
     t = CsvTransformer()
     t.transform("tests/ids.tsv", "tests/ids-tr.tsv")

@@ -8,3 +8,9 @@ release: cleandist
 
 cleandist:
 	rm dist/* || true
+
+PREFIXSETS = obo_context semweb_context idot_context monarch_context
+
+all-jsonld: $(patsubst %, prefixcommons/registry/%.jsonld, $(PREFIXSETS))
+prefixcommons/registry/%.jsonld:
+	curl -L -s https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/$*.jsonld > $@.tmp && mv $@.tmp $@
