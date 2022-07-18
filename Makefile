@@ -9,7 +9,7 @@ release: cleandist
 cleandist:
 	rm dist/* || true
 
-PREFIXSETS = obo_context semweb_context idot_context monarch_context
+PREFIXSETS = obo_context semweb_context idot_context monarch_context go_context go_obo_context
 
 all-jsonld: $(patsubst %, prefixcommons/registry/%.jsonld, $(PREFIXSETS))
 prefixcommons/registry/%.jsonld:
