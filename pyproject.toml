@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "prefixcommons"
-version = "0.1.10"
+version = "0.1.12"
 description = "A python API for working with ID prefixes"
 authors = ["cmungall <cjm@berkeleybop.org>"]
 readme = "README.rst"
