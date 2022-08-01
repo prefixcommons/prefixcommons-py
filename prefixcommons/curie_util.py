@@ -1,10 +1,10 @@
 import json
+import logging
+from contextlib import closing
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import requests
-from contextlib import closing
-import logging
 
 PREFIX_MAP = Dict[str, Any]
 
@@ -14,8 +14,10 @@ this_path = Path(__file__).parent
 class CurieError(Exception):
     """base class"""
 
+
 class NoExpansion(CurieError):
     """Thrown if no prefix exists."""
+
     def __init__(self, prefix, id):
         self.prefix = prefix
         self.id = id
@@ -23,18 +25,21 @@ class NoExpansion(CurieError):
 
 class NoContraction(CurieError):
     """Thrown if no prefix matches."""
+
     def __init__(self, uri):
         self.uri = uri
 
 
 class NoPrefix(CurieError):
     """Thrown if no prefix matches."""
+
     def __init__(self, uri):
         self.uri = uri
 
 
 class AmbiguousPrefix(CurieError):
     """Thrown if multiple prefix matches."""
+
     def __init__(self, uri, curies):
         self.uri = uri
         self.curies = curies
@@ -42,6 +47,7 @@ class AmbiguousPrefix(CurieError):
 
 class InvalidSyntax(CurieError):
     """Thrown if curie does not contain ":" ."""
+
     def __init__(self, id):
         self.id = id
 
@@ -70,8 +76,8 @@ def read_remote_jsonld_context(url: str) -> PREFIX_MAP:
 
 
 def extract_prefixmap(obj: Dict[str, Any]) -> PREFIX_MAP:
-    if '@context' in obj:
-        return obj['@context']
+    if "@context" in obj:
+        return obj["@context"]
     else:
         return obj
 
@@ -82,24 +88,27 @@ def read_biocontext(name: str) -> PREFIX_MAP:
 
     E.g. monarch_context
     """
-    path_to_jsonld = str(this_path / 'registry' / f"{name}.jsonld")
+    path_to_jsonld = str(this_path / "registry" / f"{name}.jsonld")
     with open(path_to_jsonld) as file:
         return extract_prefixmap(json.load(file))
-    #return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
-        
+    # return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
+
 
 # TODO: configration
-default_curie_maps = [read_biocontext('monarch_context'), read_biocontext('obo_context')]
+default_curie_maps = [
+    read_biocontext("monarch_context"),
+    read_biocontext("obo_context"),
+]
 
 
-def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] =None):
+def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None):
     if cmaps is None:
         cmaps = default_curie_maps
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
     return prefixes
-        
+
 
 def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, shortest=True):
     """
@@ -116,7 +125,8 @@ def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, sh
         if true, throw error if URI does not contract to exactly one CURIE. Default: False
     shortest: boolean
         if true, filter list to only include shortest. Default: True
-    returns:
+    Returns
+    -------
        a list of possible CURIES
 
     If strict is True, then exactly one result expected.
@@ -126,10 +136,10 @@ def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, sh
         cmaps = default_curie_maps
     curies = set()
     for cmap in cmaps:
-        for (k,v) in cmap.items():
+        for (k, v) in cmap.items():
             if isinstance(v, str):
-                if (uri.startswith(v)):
-                    curies.add(uri.replace(v, k+":"))
+                if uri.startswith(v):
+                    curies.add(uri.replace(v, k + ":"))
     curies = list(curies)
     if shortest:
         if len(curies) > 1:
@@ -154,7 +164,7 @@ def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
             raise InvalidSyntax(id)
         else:
             return id
-    [prefix,localid] = id.split(":",1)
+    [prefix, localid] = id.split(":", 1)
     for cmap in cmaps:
         if prefix in cmap:
             return cmap[prefix] + localid
@@ -162,4 +172,3 @@ def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
         raise NoExpansion(prefix, id)
     else:
         return id
-
