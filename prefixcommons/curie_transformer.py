@@ -1,16 +1,18 @@
 import csv
-from .curie_util import expand_uri, contract_uri
+
+from .curie_util import contract_uri, expand_uri
 
 
 class Transformer(object):
     """
     Abstract base class for transformer objects
     """
+
     def __init__(self, cmaps=None, strict=False, contract=False):
         self.cmaps = cmaps
         self.strict = strict
         self.contract = contract
-    
+
     def tr_element(self, x):
         if self.contract:
             ids = []
@@ -42,7 +44,7 @@ class CsvTransformer(Transformer):
     def transform(self, infn, outfn):
         with open(infn) as infile:
             reader = csv.reader(infile, delimiter=self.delimiter)
-            with open(outfn, 'w') as outfile:
+            with open(outfn, "w") as outfile:
                 writer = csv.writer(outfile, delimiter=self.delimiter)
                 for row in reader:
                     row = [self.tr_element(x) for x in row]
