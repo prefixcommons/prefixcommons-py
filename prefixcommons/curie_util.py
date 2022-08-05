@@ -4,7 +4,9 @@ from contextlib import closing
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import curies
 import requests
+from curies import Converter
 
 PREFIX_MAP = Dict[str, Any]
 
@@ -101,9 +103,14 @@ default_curie_maps = [
 ]
 
 
-def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None):
+default_converter = curies.chain(
+    Converter.from_prefix_map(prefix_map) for prefix_map in default_curie_maps
+)
+
+
+def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
     if cmaps is None:
-        cmaps = default_curie_maps
+        return list(default_converter.get_prefixes())
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
@@ -133,7 +140,11 @@ def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, sh
 
     """
     if cmaps is None:
-        cmaps = default_curie_maps
+        res = default_converter.compress(uri)
+        if res is None and strict:
+            raise NoPrefix(uri)
+        return res
+
     curies = set()
     for cmap in cmaps:
         for (k, v) in cmap.items():
@@ -157,14 +168,20 @@ def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
     """
     Expands a CURIE/identifier to a URI
     """
-    if cmaps is None:
-        cmaps = default_curie_maps
-    if id.find(":") == -1:
+    try:
+        prefix, localid = id.split(":", 1)
+    except ValueError:
         if strict:
-            raise InvalidSyntax(id)
+            raise InvalidSyntax(id) from None
         else:
             return id
-    [prefix, localid] = id.split(":", 1)
+
+    if cmaps is None:
+        uri = default_converter.compress(id)
+        if uri is None and strict:
+            raise NoExpansion
+        return uri
+
     for cmap in cmaps:
         if prefix in cmap:
             return cmap[prefix] + localid
