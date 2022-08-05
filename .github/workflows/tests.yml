@@ -23,3 +23,10 @@ jobs:
         run: pip install tox
       - name: Check code quality with flake8
         run: tox -e flake8
+      - name: Run tests
+        run: tox -e py
+      - name: Upload coverage report to codecov
+        uses: codecov/codecov-action@v1
+        if: success()
+        with:
+          file: coverage.xml
