@@ -110,7 +110,7 @@ default_converter = curies.chain(
 
 def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
     if cmaps is None:
-        return list(default_converter.get_prefixes())
+        return sorted(default_converter.get_prefixes())
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
@@ -144,9 +144,12 @@ def contract_uri(
     if cmaps is None:
         # TODO warn if not shortest?
         curie = default_converter.compress(uri)
-        if curie is None and strict:
+        if curie is not None:
+            return [curie]
+        elif strict:
             raise NoPrefix(uri)
-        return [curie]
+        else:
+            return []
 
     curies = set()
     for cmap in cmaps:
@@ -181,9 +184,12 @@ def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
 
     if cmaps is None:
         uri = default_converter.compress(id)
-        if uri is None and strict:
+        if uri is not None:
+            return uri
+        elif strict:
             raise NoExpansion
-        return uri
+        else:
+            return id
 
     for cmap in cmaps:
         if prefix in cmap:
