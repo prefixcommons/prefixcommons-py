@@ -117,7 +117,9 @@ def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
     return prefixes
 
 
-def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, shortest=True):
+def contract_uri(
+    uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, shortest=True
+) -> List[str]:
     """
     Contracts a URI/IRI to a CURIE/identifier
 
@@ -140,10 +142,11 @@ def contract_uri(uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, sh
 
     """
     if cmaps is None:
-        res = default_converter.compress(uri)
-        if res is None and strict:
+        # TODO warn if not shortest?
+        curie = default_converter.compress(uri)
+        if curie is None and strict:
             raise NoPrefix(uri)
-        return res
+        return [curie]
 
     curies = set()
     for cmap in cmaps:
