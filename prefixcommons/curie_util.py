@@ -2,7 +2,7 @@ import json
 import logging
 from contextlib import closing
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import curies
 import requests
@@ -10,7 +10,7 @@ from curies import Converter
 
 PREFIX_MAP = Dict[str, Any]
 
-this_path = Path(__file__).parent
+HERE = Path(__file__).parent.resolve()
 
 
 class CurieError(Exception):
@@ -20,7 +20,7 @@ class CurieError(Exception):
 class NoExpansion(CurieError):
     """Thrown if no prefix exists."""
 
-    def __init__(self, prefix, id):
+    def __init__(self, prefix: str, id: str):
         self.prefix = prefix
         self.id = id
 
@@ -28,21 +28,21 @@ class NoExpansion(CurieError):
 class NoContraction(CurieError):
     """Thrown if no prefix matches."""
 
-    def __init__(self, uri):
+    def __init__(self, uri: str):
         self.uri = uri
 
 
 class NoPrefix(CurieError):
     """Thrown if no prefix matches."""
 
-    def __init__(self, uri):
+    def __init__(self, uri: str):
         self.uri = uri
 
 
 class AmbiguousPrefix(CurieError):
     """Thrown if multiple prefix matches."""
 
-    def __init__(self, uri, curies):
+    def __init__(self, uri: str, curies: List[str]):
         self.uri = uri
         self.curies = curies
 
@@ -50,15 +50,14 @@ class AmbiguousPrefix(CurieError):
 class InvalidSyntax(CurieError):
     """Thrown if curie does not contain ":" ."""
 
-    def __init__(self, id):
+    def __init__(self, id: str):
         self.id = id
 
 
-def read_local_jsonld_context(fn) -> PREFIX_MAP:
+def read_local_jsonld_context(fn: Union[str, Path]) -> PREFIX_MAP:
     """
     Reads a prefix map from a JSON-LD context file from local disk
     """
-
     with open(fn) as file:
         return extract_prefixmap(json.load(file))
 
@@ -90,7 +89,7 @@ def read_biocontext(name: str) -> PREFIX_MAP:
 
     E.g. monarch_context
     """
-    path_to_jsonld = str(this_path / "registry" / f"{name}.jsonld")
+    path_to_jsonld = HERE / "registry" / f"{name}.jsonld"
     with open(path_to_jsonld) as file:
         return extract_prefixmap(json.load(file))
     # return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
@@ -118,7 +117,7 @@ def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
 
 
 def contract_uri(
-    uri, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False, shortest=True
+    uri: str, cmaps: Optional[List[PREFIX_MAP]] = None, strict: bool = False, shortest: bool = True
 ) -> List[str]:
     """
     Contracts a URI/IRI to a CURIE/identifier
@@ -128,6 +127,8 @@ def contract_uri(
 
     Arguments
     ---------
+    uri:
+        The URI to contract
     cmaps : list
         list of context maps
     strict: boolean
@@ -170,7 +171,7 @@ def contract_uri(
     return curies
 
 
-def expand_uri(id, cmaps: Optional[List[PREFIX_MAP]] = None, strict=False):
+def expand_uri(id: str, cmaps: Optional[List[PREFIX_MAP]] = None, strict: bool = False) -> str:
     """
     Expands a CURIE/identifier to a URI
     """
