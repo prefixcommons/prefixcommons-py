@@ -184,11 +184,11 @@ def expand_uri(id: str, cmaps: Optional[List[PREFIX_MAP]] = None, strict: bool =
             return id
 
     if cmaps is None:
-        uri = default_converter.compress(id)
+        uri = default_converter.expand(curie=id)
         if uri is not None:
             return uri
         elif strict:
-            raise NoExpansion
+            raise NoExpansion(prefix, localid)
         else:
             return id
 
@@ -196,6 +196,6 @@ def expand_uri(id: str, cmaps: Optional[List[PREFIX_MAP]] = None, strict: bool =
         if prefix in cmap:
             return cmap[prefix] + localid
     if strict:
-        raise NoExpansion(prefix, id)
+        raise NoExpansion(prefix, localid)
     else:
         return id
