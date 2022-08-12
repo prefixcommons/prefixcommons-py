@@ -109,7 +109,7 @@ default_converter = curies.chain(
 
 def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
     if cmaps is None:
-        return sorted(default_converter.get_prefixes())
+        return list(default_converter.get_prefixes())
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
