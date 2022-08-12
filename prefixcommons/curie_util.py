@@ -4,7 +4,9 @@ from contextlib import closing
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+import curies
 import requests
+from curies import Converter
 
 PREFIX_MAP = Dict[str, Any]
 
@@ -100,9 +102,14 @@ default_curie_maps = [
 ]
 
 
+default_converter = curies.chain(
+    Converter.from_prefix_map(prefix_map) for prefix_map in default_curie_maps
+)
+
+
 def get_prefixes(cmaps: Optional[List[PREFIX_MAP]] = None) -> List[str]:
     if cmaps is None:
-        cmaps = default_curie_maps
+        return list(default_converter.get_prefixes())
     prefixes = []
     for cmap in cmaps:
         prefixes += cmap.keys()
@@ -136,7 +143,15 @@ def contract_uri(
 
     """
     if cmaps is None:
-        cmaps = default_curie_maps
+        # TODO warn if not shortest?
+        curie = default_converter.compress(uri)
+        if curie is not None:
+            return [curie]
+        elif strict:
+            raise NoPrefix(uri)
+        else:
+            return []
+
     curies = set()
     for cmap in cmaps:
         for (k, v) in cmap.items():
@@ -164,17 +179,23 @@ def expand_uri(id: str, cmaps: Optional[List[PREFIX_MAP]] = None, strict: bool =
         prefix, localid = id.split(":", 1)
     except ValueError:
         if strict:
-            raise InvalidSyntax(id)
+            raise InvalidSyntax(id) from None
         else:
             return id
 
     if cmaps is None:
-        cmaps = default_curie_maps
+        uri = default_converter.expand(curie=id)
+        if uri is not None:
+            return uri
+        elif strict:
+            raise NoExpansion(prefix, localid)
+        else:
+            return id
 
     for cmap in cmaps:
         if prefix in cmap:
             return cmap[prefix] + localid
     if strict:
-        raise NoExpansion(prefix, id)
+        raise NoExpansion(prefix, localid)
     else:
         return id
