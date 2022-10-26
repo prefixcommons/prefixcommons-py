@@ -1,3 +1,9 @@
+__UPDATE 2022-10-25__
+
+This repository is being replaced by https://github.com/linkml/prefixmaps/issues/6
+
+Newer code should not use the prefixcommons package on PyPI, but instead use [prefixmaps](https://pypi.org/project/prefixmaps) combined with [curies](https://pypi.org/project/curies)
+
 prefixcommons
 =============
 
