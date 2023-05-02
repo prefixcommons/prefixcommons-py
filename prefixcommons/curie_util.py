@@ -154,7 +154,7 @@ def contract_uri(
 
     curies = set()
     for cmap in cmaps:
-        for (k, v) in cmap.items():
+        for k, v in cmap.items():
             if isinstance(v, str):
                 if uri.startswith(v):
                     curies.add(uri.replace(v, k + ":"))
