@@ -1,5 +1,5 @@
 test:
-	pytest tests/*.py
+	poetry run pytest tests/*.py
 
 # TODO: manually increment version in prefixcommons/__init__.sh, run . bump.sh, then this
 release: cleandist
