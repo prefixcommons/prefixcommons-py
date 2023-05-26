@@ -89,11 +89,7 @@ def read_biocontext(name: str) -> PREFIX_MAP:
 
     E.g. monarch_context
     """
-    path_to_jsonld = HERE / "registry" / f"{name}.jsonld"
-    with open(path_to_jsonld) as file:
-        return extract_prefixmap(json.load(file))
-    # return read_remote_jsonld_context("https://raw.githubusercontent.com/prefixcommons/biocontext/master/registry/"+name+".jsonld")
-
+    return read_remote_jsonld_context("http://w3id.org/biolink/biocontext/"+name+".jsonld")
 
 # TODO: configration
 default_curie_maps = [
